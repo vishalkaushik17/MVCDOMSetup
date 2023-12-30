@@ -254,7 +254,7 @@ $(function () {
     });
 })
 
-
+ 
 var FancyAlerts = (function () {
 
     var self = this;
