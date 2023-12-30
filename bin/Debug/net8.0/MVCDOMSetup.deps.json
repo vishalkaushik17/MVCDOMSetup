@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "MVCDOMSetup/1.0.0": {
+        "runtime": {
+          "MVCDOMSetup.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "MVCDOMSetup/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
