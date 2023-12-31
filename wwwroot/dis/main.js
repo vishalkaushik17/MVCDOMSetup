@@ -1,6 +1,33 @@
 ﻿const currentUrl = `${window.location.protocol}//${window.location.host}`;
-const jsLayoutPageComponent = function () {
 
+//put first if need to pass as param in another iife function
+const JSApiService = function () {
+    const GetAPIDataAsJso = function (currentUrl, path, RenderViewAsHtmlString, PrintError) {
+        /*debugger;*/
+        fetch(`${currentUrl}${path}`, {
+            method: 'GET',
+            headers: ApiHeaders
+        })
+            .then(JsonResponse).then(RenderViewAsHtmlString).catch(PrintError);
+    };
+    const ApiHeaders = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    };
+    const JsonResponse = async (response) => {
+        debugger;
+        return await response.json();
+    };
+    const TextResponse = async (response) => {
+        debugger;
+        return await response.text();
+    };
+    return {
+        GetAPIData: GetAPIData
+    }
+}();
+const jsLayoutPageComponent = function (jsApiService) {
+    debugger;
     //Find page navigation links and register event listener to link element
     const FindSPANavigationLinks = function () {
         const navLinkElements = Array.from(document.querySelectorAll('a')).filter(element => {
@@ -18,42 +45,15 @@ const jsLayoutPageComponent = function () {
         if (indexValue > 0) {
             const lastPath = link.substring(indexValue);
             if (lastPath.length > 0) {
-                RenderView(lastPath);
+                debugger;
+                jsApiService.GetAPIData(currentUrl, lastPath, RenderViewAsHtmlString, PrintError);
             }
-
         }
     };
-    //function (path) {
-    //    const rawResponse = await fetch(`${currentUrl}${path}`, {
-    //        method: 'GET',
-    //        headers: {
-    //            'Accept': 'application/json',
-    //            'Content-Type': 'application/json'
-    //        }
-    //    });
-    //    const content = await rawResponse.json();
-
-    //    console.log(content);
-    //};
+    
     //fetch view from respective action method and render on html page.
-    const RenderView = function (path) {
-        debugger;
-        const rawResponse = fetch(`${currentUrl}${path}`,{
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(JsonResponse).then(RenderViewAsHtmlString).catch(PrintError);
-    };
-    const JsonResponse = (response) => {
-        return response.json();
-    }
-    const TextResponse = (response) => {
-        return response.text();
-    }
     const RenderViewAsHtmlString = (result) => {
+        /*debugger;*/
         debugger;
         console.log(result);
         const partialId = document.getElementById('partial');
@@ -67,8 +67,8 @@ const jsLayoutPageComponent = function () {
     }
 
     const PrintError = (error) => {
-        debugger;
-        FancyAlerts.show.show({ msg: 'Uh oh something went wrong!', type: 'error' })
+        /*debugger;*/
+        
         swal({
             title: "Error!",
             text: error.message,
@@ -95,7 +95,7 @@ const jsLayoutPageComponent = function () {
     return {
         FindSPANavigationLinks: FindSPANavigationLinks
     }
-}();
+}(JSApiService);
 const jsHomeControllerComponent = function () {
    
     const AddClickEventHandlerOnClickButton = function (element) {
@@ -103,7 +103,6 @@ const jsHomeControllerComponent = function () {
             element.addEventListener('click', clickOnTest);
         }
     };
-
     const clickOnTest = function () {
         fetch(`${currentUrl}/home/test`).then(data => {
             if (data) {
@@ -164,176 +163,6 @@ const jsHomeControllerComponent = function () {
     }
 }();
 
-//************************* */
-//let FancyAlerts = (function () {
-
-//    const self = this;
-//    console.log(self);
-//    self.show = function (options) {
-//        if (document.getElementsByClassName('.fancy-alert').length > -1) {
-//            FancyAlerts.hide();
-//        }
-//        const defaults = {
-//            type: 'success',
-//            msg: 'Success',
-//            timeout: 5000,
-//            icon: 'fa fa-check',
-//            onClose: function () { }
-//        };
-
-//        if (options.type === 'error' && !options.icon) options.icon = 'fa fa-exclamation-triangle';
-//        if (options.type === 'info' && !options.icon) options.icon = 'fa fa-cog';
-
-
-//        options = { ...defaults, ...options };
-//        var alert = ('<div class="fancy-alert ' + options.type + ' ">' +
-//            '<div class="">' +
-//            '<i class="fancy-alert--icon ' + options.icon + '"></i>' +
-//            '<div class="fancy-alert--content">' +
-//            '<div class="fancy-alert--words">' + options.msg + '</div>' +
-//            '<a class="fancy-alert--close" href="#"><i class="fa fa-times"></i></a>' +
-//            '</div>' +
-//            '</div>' +
-//            '</div>');
-
-//        document.getElementsByTagName('partial').prepend(alert);
-//        setTimeout(function () {
-
-//            alert.addClass('fancy-alert__active');
-//        }, 10);
-
-//        setTimeout(function () {
-//            alert.addClass('fancy-alert__extended');
-//        }, 500);
-
-//        if (options.timeout) {
-//            self.hide(options.timeout);
-//        }
-//        $('.fancy-alert--close').on('click', function (e) {
-//            e.preventDefault();
-//            self.hide();
-//        });
-
-//        alert.on('fancyAlertClosed', function () {
-//            options.onClose();
-//        });
-//    };
-
-
-//    self.hide = function (_delay) {
-//        var delay = _delay || 0;
-
-//        var alert = document.getElementsByClassName('.fancy-alert');
-//        setTimeout(function () {
-//            setTimeout(function () {
-//                alert.removeClass("fancy-alert__extended");
-//            }, 10);
-
-//            setTimeout(function () {
-//                alert.removeClass('fancy-alert__active');
-//            }, 500);
-//            setTimeout(function () {
-//                alert.trigger('fancyAlertClosed');
-//                alert.remove();
-//            }, 1000);
-//        }, delay);
-//    }
-
-//    return { self: self, FancyAlerts: FancyAlerts };
-
-//})();
-$(function () {
-    $('.show-alert__error').click(function () {
-        FancyAlerts.show({ msg: 'Uh oh something went wrong!', type: 'error' })
-    })
-    $('.show-alert__success').click(function () {
-        FancyAlerts.show({ msg: 'Nailed it! This totally worked.' })
-    })
-    $('.show-alert__info').click(function () {
-        FancyAlerts.show({ msg: 'So long and thanks for all the shoes.', type: 'info' })
-    });
-})
-
- 
-var FancyAlerts = (function () {
-
-    var self = this;
-
-    self.show = function (options) {
-        if ($('.fancy-alert').length > -1) {
-            FancyAlerts.hide();
-        }
-        var defaults = {
-            type: 'success',
-            msg: 'Success',
-            timeout: 5000,
-            icon: 'fa fa-check',
-            onClose: function () { }
-        };
-
-        if (options.type === 'error' && !options.icon) options.icon = 'fa fa-exclamation-triangle';
-        if (options.type === 'info' && !options.icon) options.icon = 'fa fa-cog';
-
-        var options = $.extend(defaults, options);
-
-        var $alert = $('<div class="fancy-alert ' + options.type + ' ">' +
-            '<div class="">' +
-            '<i class="fancy-alert--icon ' + options.icon + '"></i>' +
-            '<div class="fancy-alert--content">' +
-            '<div class="fancy-alert--words">' + options.msg + '</div>' +
-            '<a class="fancy-alert--close" href="#"><i class="fa fa-times"></i></a>' +
-            '</div>' +
-            '</div>' +
-            '</div>');
-
-        $('body').prepend($alert);
-        setTimeout(function () {
-            $alert.addClass('fancy-alert__active');
-        }, 10);
-
-        setTimeout(function () {
-            $alert.addClass('fancy-alert__extended');
-        }, 500);
-
-        if (options.timeout) {
-            self.hide(options.timeout);
-        }
-        $('.fancy-alert--close').on('click', function (e) {
-            e.preventDefault();
-            self.hide();
-        });
-
-        $alert.on('fancyAlertClosed', function () {
-            options.onClose();
-        });
-    };
-
-
-    self.hide = function (_delay) {
-        var delay = _delay || 0;
-
-        var $alert = $('.fancy-alert');
-        setTimeout(function () {
-            setTimeout(function () {
-                $alert.removeClass("fancy-alert__extended");
-            }, 10);
-
-            setTimeout(function () {
-                $alert.removeClass('fancy-alert__active');
-            }, 500);
-            setTimeout(function () {
-                $alert.trigger('fancyAlertClosed');
-                $alert.remove();
-            }, 1000);
-        }, delay);
-    }
-
-    return self;
-
-})();
-
-//************************* */
-
 jsLayoutPageComponent.FindSPANavigationLinks();
-const clickButton = document.getElementById('indexClickButton');
-jsHomeControllerComponent.AddClickEventOnButton(clickButton);
+//const clickButton = document.getElementById('indexClickButton');
+//jsHomeControllerComponent.AddClickEventOnButton(clickButton);
